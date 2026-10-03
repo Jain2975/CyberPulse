@@ -1,0 +1,93 @@
+version: "3.9"
+
+services:
+  # ─── Purposefully Vulnerable Target ───────────────────────────────────────
+  vulnapp:
+    build:
+      context: ./vulnapp
+      dockerfile: Dockerfile
+    container_name: cyberpulse_target
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+      - SECRET_KEY=supersecretkey_do_not_use_in_prod
+    volumes:
+      - ./vulnapp:/app          # live-reload source for patching
+    networks:
+      - pentest_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # ─── Patched Version of Target (spun up after patching) ───────────────────
+  vulnapp_patched:
+    build:
+      context: ./vulnapp_patched
+      dockerfile: Dockerfile
+    container_name: cyberpulse_patched
+    ports:
+      - "5001:5000"
+    environment:
+      - FLASK_ENV=development
+      - SECRET_KEY=supersecretkey_do_not_use_in_prod
+    networks:
+      - pentest_net
+    profiles:
+      - patched       # only starts when --profile patched is passed
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # ─── Security scanners (opt-in: --profile scanners) ───────────────────────
+  # SAST: Semgrep over the source tree (read-only mount)
+  #   docker compose --profile scanners run --rm semgrep
+  semgrep:
+    image: semgrep/semgrep:latest
+    container_name: cyberpulse_semgrep
+    profiles:
+      - scanners
+    working_dir: /src
+    volumes:
+      - ./:/src:ro
+    environment:
+      - SEMGREP_SEND_METRICS=off
+    command: >
+      semgrep --config configs/semgrep/cyberpulse.yml
+              --json --metrics=off
+              vulnapp/
+
+  # DAST: OWASP ZAP baseline scan against the running target.
+  # Inside the compose network the target is reachable by service name, so no
+  # host networking (or host.docker.internal) is needed.
+  #   docker compose --profile scanners run --rm zap
+  zap:
+    image: ghcr.io/zaproxy/zaproxy:stable
+    container_name: cyberpulse_zap
+    profiles:
+      - scanners
+    networks:
+      - pentest_net
+    depends_on:
+      - vulnapp
+    volumes:
+      - ./state/zap:/zap/wrk:rw
+      - ./configs/zap:/zap/configs:ro
+    command: >
+      zap-baseline.py
+        -t http://vulnapp:5000
+        -c /zap/configs/baseline.conf
+        -J zap_report.json
+        -r zap_report.html
+        -m 2 -I -s
+
+networks:
+  pentest_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16

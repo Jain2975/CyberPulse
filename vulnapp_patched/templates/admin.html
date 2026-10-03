@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VulnApp Admin</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 80px auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        th { background: #2c3e50; color: white; }
+    </style>
+</head>
+<body>
+    <h2>🔐 Admin Panel</h2>
+    <!-- VULN: hardcoded password 'admin123' in X-Admin-Password header -->
+    <p>Access via: <code>curl -H "X-Admin-Password: admin123" http://localhost:5000/admin</code></p>
+    <p style="color:#c0392b">⚠️ Hardcoded credential in source code!</p>
+</body>
+</html>

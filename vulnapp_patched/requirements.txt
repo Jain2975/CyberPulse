@@ -1,0 +1,4 @@
+# VulnApp - Purposefully Vulnerable Flask Target
+Flask==2.3.3
+Werkzeug==2.3.7
+PyJWT==2.8.0

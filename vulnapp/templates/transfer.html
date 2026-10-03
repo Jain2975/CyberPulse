@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>VulnApp — Transfer</title>
+        <style>
+            body {
+                font-family: monospace;
+                background: #1a1a1a;
+                color: #ffaa00;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+            }
+            .box {
+                border: 1px solid #ffaa00;
+                padding: 2rem;
+                min-width: 300px;
+            }
+            h2 {
+                margin-top: 0;
+                text-align: center;
+            }
+            input {
+                width: 100%;
+                padding: 0.4rem;
+                margin: 0.4rem 0 1rem;
+                background: #111;
+                color: #ffaa00;
+                border: 1px solid #ffaa00;
+                box-sizing: border-box;
+                font-family: monospace;
+            }
+            button {
+                width: 100%;
+                padding: 0.5rem;
+                background: #ffaa00;
+                color: #111;
+                border: none;
+                cursor: pointer;
+                font-family: monospace;
+                font-weight: bold;
+            }
+            .warn {
+                color: #ff4444;
+                font-size: 0.75rem;
+                text-align: center;
+                margin-top: 1rem;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="box">
+            <h2>[ Transfer Funds ]</h2>
+            <!-- VULN: No CSRF token — susceptible to cross-site request forgery -->
+            <form method="POST" action="/transfer">
+                <label>From</label>
+                <input type="text" name="from" value="alice" required />
+                <label>To</label>
+                <input type="text" name="to" placeholder="recipient" required />
+                <label>Amount</label>
+                <input
+                    type="number"
+                    name="amount"
+                    placeholder="0.00"
+                    min="0.01"
+                    step="0.01"
+                    required
+                />
+                <button type="submit">TRANSFER</button>
+            </form>
+            <p class="warn">⚠ No CSRF protection — educational use only</p>
+        </div>
+    </body>
+</html>

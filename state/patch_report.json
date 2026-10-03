@@ -1,0 +1,56 @@
+{
+  "status": "complete",
+  "patches_applied": 5,
+  "patched_dir": "/home/aarus/CyberPulse/vulnapp_patched",
+  "patches": [
+    {
+      "type": "sql_injection",
+      "description": "Replaced f-string SQL with parameterized query using ? placeholders",
+      "endpoint": "/login",
+      "fix": "Parameterized query via sqlite3 execute(query, (params,))",
+      "cwe": "CWE-89"
+    },
+    {
+      "type": "hardcoded_credentials",
+      "description": "Replaced hardcoded 'admin123' with os.environ.get('ADMIN_PASSWORD') plus a random fallback; all references renamed (no stale symbols)",
+      "endpoint": "/admin",
+      "fix": "Secret from environment (random fallback); hmac.compare_digest() for constant-time check",
+      "cwe": "CWE-798"
+    },
+    {
+      "type": "broken_jwt",
+      "description": "Replaced verify_signature=False with full HS256 verification; removed 'none' algorithm",
+      "endpoint": "/api/profile",
+      "fix": "jwt.decode(token, secret_key, algorithms=['HS256'])",
+      "cwe": "CWE-347"
+    },
+    {
+      "type": "command_injection",
+      "description": "Replaced shell=True f-string with safe list-form subprocess + regex whitelist",
+      "endpoint": "/ping",
+      "fix": "subprocess([...], shell=False) + host regex validation",
+      "cwe": "CWE-78"
+    },
+    {
+      "type": "runtime_hardening",
+      "description": "Deployment hardening: configurable bind (default 5001), debugger disabled; seed files/ next to app.py so legitimate reads still work",
+      "endpoint": "(startup)",
+      "fix": "app.run(host=os.environ.get('HOST','127.0.0.1'), port=int(os.environ.get('PORT','5001')), debug=False)",
+      "cwe": "CWE-489"
+    }
+  ],
+  "verification": {
+    "source": "/home/aarus/CyberPulse/vulnapp_patched/app.py",
+    "syntax_ok": true,
+    "hygiene_ok": true,
+    "stale_symbols": [],
+    "smoke_test": "passed",
+    "smoke_detail": "Booted on 127.0.0.1:53927 and /health returned 200"
+  },
+  "_meta": {
+    "agent": "PatchingAgent",
+    "target": "http://127.0.0.1:5000",
+    "timestamp": "2026-10-03T16:47:20.551876Z",
+    "duration_s": 0.55
+  }
+}

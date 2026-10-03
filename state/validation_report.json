@@ -1,0 +1,373 @@
+{
+  "status": "complete",
+  "target": "http://127.0.0.1:5000",
+  "summary": {
+    "total": 20,
+    "confirmed": 7,
+    "partial": 0,
+    "failed": 13,
+    "confirmation_rate": "35.0%"
+  },
+  "findings": [
+    {
+      "id": "sqli_001_sqli_login",
+      "type": "sql_injection",
+      "endpoint": "/login",
+      "method": "POST",
+      "payload": "' OR '1'='1",
+      "status": "FAILED",
+      "severity": "CRITICAL",
+      "cvss_score": 9.8,
+      "evidence": [
+        "No matching indicators (checked: ['welcome_message', 'jwt_token_returned', 'sql_error_leaked'])"
+      ],
+      "indicators_matched": [],
+      "response_status": 401,
+      "remediation_hint": "Use parameterized queries / prepared statements. Never interpolate user input into SQL strings."
+    },
+    {
+      "id": "sqli_002_sqli_login",
+      "type": "sql_injection",
+      "endpoint": "/login",
+      "method": "POST",
+      "payload": "admin'--",
+      "status": "CONFIRMED",
+      "severity": "CRITICAL",
+      "cvss_score": 9.8,
+      "evidence": [
+        "Matched indicators: welcome_message, jwt_token_returned",
+        "HTTP 200 returned",
+        "Re-verification passed"
+      ],
+      "indicators_matched": [
+        "welcome_message",
+        "jwt_token_returned"
+      ],
+      "response_status": 200,
+      "remediation_hint": "Use parameterized queries / prepared statements. Never interpolate user input into SQL strings."
+    },
+    {
+      "id": "sqli_003_sqli_login",
+      "type": "sql_injection",
+      "endpoint": "/login",
+      "method": "POST",
+      "payload": "' UNION SELECT 1,2,3--",
+      "status": "FAILED",
+      "severity": "CRITICAL",
+      "cvss_score": 9.8,
+      "evidence": [
+        "No matching indicators (checked: ['welcome_message', 'jwt_token_returned', 'sql_error_leaked'])"
+      ],
+      "indicators_matched": [],
+      "response_status": 500,
+      "remediation_hint": "Use parameterized queries / prepared statements. Never interpolate user input into SQL strings."
+    },
+    {
+      "id": "sqli_004_sqli_login",
+      "type": "sql_injection",
+      "endpoint": "/login",
+      "method": "POST",
+      "payload": "' OR SLEEP(3)--",
+      "status": "FAILED",
+      "severity": "CRITICAL",
+      "cvss_score": 9.8,
+      "evidence": [
+        "No matching indicators (checked: ['welcome_message', 'jwt_token_returned', 'sql_error_leaked'])"
+      ],
+      "indicators_matched": [],
+      "response_status": 500,
+      "remediation_hint": "Use parameterized queries / prepared statements. Never interpolate user input into SQL strings."
+    },
+    {
+      "id": "sqli_005_sqli_login",
+      "type": "sql_injection",
+      "endpoint": "/login",
+      "method": "POST",
+      "payload": "' UNION SELECT sqlite_version(),2--",
+      "status": "FAILED",
+      "severity": "CRITICAL",
+      "cvss_score": 9.8,
+      "evidence": [
+        "No matching indicators (checked: ['welcome_message', 'jwt_token_returned', 'sql_error_leaked'])"
+      ],
+      "indicators_matched": [
+        "sql_error_leaked"
+      ],
+      "response_status": 500,
+      "remediation_hint": "Use parameterized queries / prepared statements. Never interpolate user input into SQL strings."
+    },
+    {
+      "id": "hc_admin123_hc_admin",
+      "type": "hardcoded_credentials",
+      "endpoint": "/admin",
+      "method": "GET",
+      "payload": "admin123",
+      "status": "CONFIRMED",
+      "severity": "CRITICAL",
+      "cvss_score": 9.1,
+      "evidence": [
+        "Matched indicators: admin_data_returned",
+        "HTTP 200 returned",
+        "Re-verification passed"
+      ],
+      "indicators_matched": [
+        "admin_data_returned"
+      ],
+      "response_status": 200,
+      "remediation_hint": "Remove hardcoded credentials. Use environment variables or a secrets manager (e.g., HashiCorp Vault)."
+    },
+    {
+      "id": "jwt_001_jwt_profile",
+      "type": "broken_jwt",
+      "endpoint": "/api/profile",
+      "method": "GET",
+      "payload": "eyJhbGciOiAibm9uZSIsICJ0eXAiOiAiSldUIn0.eyJ1c2VyIjogImFkbWluIiwgInJvbGUiOiAiYWRtaW4ifQ.",
+      "status": "CONFIRMED",
+      "severity": "HIGH",
+      "cvss_score": 8.1,
+      "evidence": [
+        "Matched indicators: admin_role_confirmed, privileged_data_returned",
+        "HTTP 200 returned",
+        "Re-verification passed"
+      ],
+      "indicators_matched": [
+        "admin_role_confirmed",
+        "privileged_data_returned"
+      ],
+      "response_status": 200,
+      "remediation_hint": "Always verify JWT signatures. Never accept alg:none. Use PyJWT with explicit algorithm and a strong secret."
+    },
+    {
+      "id": "jwt_002_jwt_profile",
+      "type": "broken_jwt",
+      "endpoint": "/api/profile",
+      "method": "GET",
+      "payload": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4iLCJyb2xlIjoiYWRtaW4ifQ.fZW5BJrerUcdVniII_annfw1PCil9WrxXglLaNsPdHo",
+      "status": "CONFIRMED",
+      "severity": "HIGH",
+      "cvss_score": 8.1,
+      "evidence": [
+        "Matched indicators: admin_role_confirmed, privileged_data_returned",
+        "HTTP 200 returned",
+        "Re-verification passed"
+      ],
+      "indicators_matched": [
+        "admin_role_confirmed",
+        "privileged_data_returned"
+      ],
+      "response_status": 200,
+      "remediation_hint": "Always verify JWT signatures. Never accept alg:none. Use PyJWT with explicit algorithm and a strong secret."
+    },
+    {
+      "id": "jwt_003_jwt_profile",
+      "type": "broken_jwt",
+      "endpoint": "/api/profile",
+      "method": "GET",
+      "payload": "eyJhbGciOiAibm9uZSIsICJ0eXAiOiAiSldUIn0.eyJyb2xlIjogImFkbWluIiwgInVzZXIiOiAiYWRtaW4ifQ.",
+      "status": "CONFIRMED",
+      "severity": "HIGH",
+      "cvss_score": 8.1,
+      "evidence": [
+        "Matched indicators: admin_role_confirmed, privileged_data_returned",
+        "HTTP 200 returned",
+        "Re-verification passed"
+      ],
+      "indicators_matched": [
+        "admin_role_confirmed",
+        "privileged_data_returned"
+      ],
+      "response_status": 200,
+      "remediation_hint": "Always verify JWT signatures. Never accept alg:none. Use PyJWT with explicit algorithm and a strong secret."
+    },
+    {
+      "id": "pt_001_pt_file",
+      "type": "path_traversal",
+      "endpoint": "/file",
+      "method": "GET",
+      "payload": "../../../../etc/passwd",
+      "status": "FAILED",
+      "severity": "HIGH",
+      "cvss_score": 7.5,
+      "evidence": [
+        "No matching indicators (checked: ['etc_passwd_content', 'source_code_exposed', 'windows_system_ini'])"
+      ],
+      "indicators_matched": [],
+      "response_status": 404,
+      "remediation_hint": "Canonicalize file paths using os.path.realpath(). Verify the resolved path starts with the allowed base directory."
+    },
+    {
+      "id": "pt_002_pt_file",
+      "type": "path_traversal",
+      "endpoint": "/file",
+      "method": "GET",
+      "payload": "..%2F..%2F..%2Fetc%2Fpasswd",
+      "status": "FAILED",
+      "severity": "HIGH",
+      "cvss_score": 7.5,
+      "evidence": [
+        "No matching indicators (checked: ['etc_passwd_content', 'source_code_exposed', 'windows_system_ini'])"
+      ],
+      "indicators_matched": [],
+      "response_status": 404,
+      "remediation_hint": "Canonicalize file paths using os.path.realpath(). Verify the resolved path starts with the allowed base directory."
+    },
+    {
+      "id": "pt_003_pt_file",
+      "type": "path_traversal",
+      "endpoint": "/file",
+      "method": "GET",
+      "payload": "..%252F..%252Fetc%252Fpasswd",
+      "status": "FAILED",
+      "severity": "HIGH",
+      "cvss_score": 7.5,
+      "evidence": [
+        "No matching indicators (checked: ['etc_passwd_content', 'source_code_exposed', 'windows_system_ini'])"
+      ],
+      "indicators_matched": [],
+      "response_status": 404,
+      "remediation_hint": "Canonicalize file paths using os.path.realpath(). Verify the resolved path starts with the allowed base directory."
+    },
+    {
+      "id": "pt_004_pt_file",
+      "type": "path_traversal",
+      "endpoint": "/file",
+      "method": "GET",
+      "payload": "..\\..\\..\\windows\\system.ini",
+      "status": "FAILED",
+      "severity": "HIGH",
+      "cvss_score": 7.5,
+      "evidence": [
+        "No matching indicators (checked: ['etc_passwd_content', 'source_code_exposed', 'windows_system_ini'])"
+      ],
+      "indicators_matched": [],
+      "response_status": 404,
+      "remediation_hint": "Canonicalize file paths using os.path.realpath(). Verify the resolved path starts with the allowed base directory."
+    },
+    {
+      "id": "pt_005_pt_file",
+      "type": "path_traversal",
+      "endpoint": "/file",
+      "method": "GET",
+      "payload": "../app.py",
+      "status": "FAILED",
+      "severity": "HIGH",
+      "cvss_score": 7.5,
+      "evidence": [
+        "No matching indicators (checked: ['etc_passwd_content', 'source_code_exposed', 'windows_system_ini'])"
+      ],
+      "indicators_matched": [],
+      "response_status": 404,
+      "remediation_hint": "Canonicalize file paths using os.path.realpath(). Verify the resolved path starts with the allowed base directory."
+    },
+    {
+      "id": "cmdi_001_cmdi_ping",
+      "type": "command_injection",
+      "endpoint": "/ping",
+      "method": "POST",
+      "payload": "127.0.0.1; id",
+      "status": "CONFIRMED",
+      "severity": "CRITICAL",
+      "cvss_score": 9.8,
+      "evidence": [
+        "Matched indicators: user_id_leaked",
+        "HTTP 200 returned",
+        "Re-verification passed"
+      ],
+      "indicators_matched": [
+        "user_id_leaked"
+      ],
+      "response_status": 200,
+      "remediation_hint": "Use subprocess with a list (not shell=True). Whitelist allowed characters. Avoid shell commands with user input."
+    },
+    {
+      "id": "cmdi_002_cmdi_ping",
+      "type": "command_injection",
+      "endpoint": "/ping",
+      "method": "POST",
+      "payload": "127.0.0.1 | whoami",
+      "status": "FAILED",
+      "severity": "CRITICAL",
+      "cvss_score": 9.8,
+      "evidence": [
+        "No matching indicators (checked: ['user_id_leaked', 'etc_passwd_leaked', 'time_delay_detected'])"
+      ],
+      "indicators_matched": [],
+      "response_status": 200,
+      "remediation_hint": "Use subprocess with a list (not shell=True). Whitelist allowed characters. Avoid shell commands with user input."
+    },
+    {
+      "id": "cmdi_003_cmdi_ping",
+      "type": "command_injection",
+      "endpoint": "/ping",
+      "method": "POST",
+      "payload": "`cat /etc/passwd`",
+      "status": "FAILED",
+      "severity": "CRITICAL",
+      "cvss_score": 9.8,
+      "evidence": [
+        "No matching indicators (checked: ['user_id_leaked', 'etc_passwd_leaked', 'time_delay_detected'])"
+      ],
+      "indicators_matched": [],
+      "response_status": 200,
+      "remediation_hint": "Use subprocess with a list (not shell=True). Whitelist allowed characters. Avoid shell commands with user input."
+    },
+    {
+      "id": "cmdi_004_cmdi_ping",
+      "type": "command_injection",
+      "endpoint": "/ping",
+      "method": "POST",
+      "payload": "$(id)",
+      "status": "FAILED",
+      "severity": "CRITICAL",
+      "cvss_score": 9.8,
+      "evidence": [
+        "No matching indicators (checked: ['user_id_leaked', 'etc_passwd_leaked', 'time_delay_detected'])"
+      ],
+      "indicators_matched": [],
+      "response_status": 200,
+      "remediation_hint": "Use subprocess with a list (not shell=True). Whitelist allowed characters. Avoid shell commands with user input."
+    },
+    {
+      "id": "cmdi_005_cmdi_ping",
+      "type": "command_injection",
+      "endpoint": "/ping",
+      "method": "POST",
+      "payload": "127.0.0.1\nid",
+      "status": "CONFIRMED",
+      "severity": "CRITICAL",
+      "cvss_score": 9.8,
+      "evidence": [
+        "Matched indicators: user_id_leaked",
+        "HTTP 200 returned",
+        "Re-verification passed"
+      ],
+      "indicators_matched": [
+        "user_id_leaked"
+      ],
+      "response_status": 200,
+      "remediation_hint": "Use subprocess with a list (not shell=True). Whitelist allowed characters. Avoid shell commands with user input."
+    },
+    {
+      "id": "csrf_001_csrf_transfer",
+      "type": "csrf",
+      "endpoint": "/transfer",
+      "method": "POST",
+      "payload": "{'to': 'attacker', 'amount': '9999'}",
+      "status": "FAILED",
+      "severity": "HIGH",
+      "cvss_score": 7.1,
+      "evidence": [
+        "No matching indicators (checked: ['action_confirmed', 'password_changed'])"
+      ],
+      "indicators_matched": [],
+      "response_status": 400,
+      "remediation_hint": "Add CSRF tokens to all state-changing forms. Use Flask-WTF or implement double-submit cookie pattern."
+    }
+  ],
+  "_meta": {
+    "agent": "ValidatorAgent",
+    "target": "http://127.0.0.1:5000",
+    "timestamp": "2026-10-03T16:47:20.000640Z",
+    "duration_s": 0.03
+  }
+}

@@ -1,0 +1,24 @@
+[
+  {
+    "id": "jwt_001",
+    "name": "Algorithm none attack",
+    "description": "Strips signature by changing alg to 'none', forges admin claim",
+    "technique": "alg_none",
+    "forge_claims": {"user": "admin", "role": "admin"}
+  },
+  {
+    "id": "jwt_002",
+    "name": "HS256 weak secret brute",
+    "description": "Tries common weak secrets to re-sign a modified token",
+    "technique": "weak_secret",
+    "wordlist": ["secret", "password", "jwt_secret", "supersecretkey_do_not_use_in_prod", "changeme"]
+  },
+  {
+    "id": "jwt_003",
+    "name": "Token replay with role escalation",
+    "description": "Replays a valid token with a modified 'role' claim",
+    "technique": "claim_tamper",
+    "target_claim": "role",
+    "target_value": "admin"
+  }
+]

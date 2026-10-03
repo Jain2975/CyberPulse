@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CyberPulse — Pentest Swarm Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">◈</span>
+      <div>
+        <h1>CyberPulse</h1>
+        <p>Autonomous Penetration Testing &amp; Vulnerability Exploitation Swarm</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="badge warn">⚠️ Sandbox / Educational Use Only</span>
+      <span id="status-pill" class="pill idle">Idle</span>
+    </div>
+  </header>
+
+  <main>
+    <!-- ── Controls ────────────────────────────────────────────────── -->
+    <section class="card controls">
+      <h2>Pipeline Control</h2>
+      <div class="control-grid">
+        <label>Mode
+          <select id="mode">
+            {% for m in modes %}<option value="{{ m }}">{{ m }}</option>{% endfor %}
+          </select>
+        </label>
+        <label>Target URL
+          <input id="target" type="text" value="http://localhost:5000" spellcheck="false">
+        </label>
+        <label>Patched Target (re-exploit)
+          <input id="patched-target" type="text" placeholder="http://localhost:5001" spellcheck="false">
+        </label>
+        <label>HTTP Timeout (s)
+          <input id="timeout" type="number" value="10" min="1" max="120">
+        </label>
+        <label class="checkbox">
+          <input id="port-scan" type="checkbox" checked> Run port scan
+        </label>
+        <div class="actions">
+          <button id="run-btn" class="btn primary">▶ Run Pipeline</button>
+          <button id="stop-btn" class="btn danger" disabled>■ Stop</button>
+          <a class="btn ghost" href="/report" target="_blank">📄 Final Report</a>
+        </div>
+      </div>
+      <p id="control-msg" class="control-msg"></p>
+      <p class="hint">
+        The pipeline runs <code>main.py</code> as a subprocess — its full colored output
+        still prints in the terminal that launched this dashboard, and is mirrored below.
+      </p>
+    </section>
+
+    <!-- ── Phase stepper ───────────────────────────────────────────── -->
+    <section class="card">
+      <h2>Phases</h2>
+      <ol id="phases" class="stepper">
+        <li data-phase="1"><span class="dot"></span><b>1</b> Recon</li>
+        <li data-phase="2"><span class="dot"></span><b>2</b> Exploit</li>
+        <li data-phase="3"><span class="dot"></span><b>3</b> Validate</li>
+        <li data-phase="4"><span class="dot"></span><b>4</b> Patch</li>
+        <li data-phase="5"><span class="dot"></span><b>5</b> Re-Exploit</li>
+      </ol>
+    </section>
+
+    <!-- ── Metrics ─────────────────────────────────────────────────── -->
+    <section class="metrics">
+      <div class="metric"><span class="metric-label">Confirmed</span><span id="m-confirmed" class="metric-value red">–</span></div>
+      <div class="metric"><span class="metric-label">Partial</span><span id="m-partial" class="metric-value amber">–</span></div>
+      <div class="metric"><span class="metric-label">Failed</span><span id="m-failed" class="metric-value dim">–</span></div>
+      <div class="metric"><span class="metric-label">Patches Applied</span><span id="m-patches" class="metric-value green">–</span></div>
+      <div class="metric"><span class="metric-label">Patched App</span><span id="m-verify" class="metric-value dim">–</span></div>
+      <div class="metric"><span class="metric-label">Duration</span><span id="m-duration" class="metric-value">–</span></div>
+    </section>
+
+    <!-- ── Live console + findings ─────────────────────────────────── -->
+    <section class="split">
+      <div class="card">
+        <h2>Live Terminal Output <span id="log-count" class="muted"></span></h2>
+        <pre id="console" class="console"></pre>
+      </div>
+      <div class="card">
+        <h2>Confirmed Findings</h2>
+        <div class="table-wrap">
+          <table id="findings" class="data-table">
+            <thead><tr><th>Type</th><th>Endpoint</th><th>Severity</th><th>CVSS</th></tr></thead>
+            <tbody><tr><td colspan="4" class="muted">Run the pipeline to populate results…</td></tr></tbody>
+          </table>
+        </div>
+        <h2>Patches &amp; Verification</h2>
+        <div id="patches" class="patch-list"><p class="muted">No patches yet.</p></div>
+      </div>
+    </section>
+
+    <!-- ── SAST / DAST scanners ────────────────────────────────────── -->
+    <section class="card" id="scanners-card">
+      <h2>SAST &amp; DAST Scans</h2>
+      <div id="scanners" class="recon-grid">
+        <p class="muted">Not run yet. Add <code>--with-sast</code> / <code>--with-dast</code>,
+          or run <code>--mode sast-only</code> / <code>--mode dast-only</code>.</p>
+      </div>
+    </section>
+
+    <!-- ── Phase 5: patched-target re-verification ─────────────────── -->
+    <section class="card" id="revalidation-card">
+      <h2>Phase 5 — Patched-Target Re-Verification</h2>
+      <div id="revalidation" class="recon-grid">
+        <p class="muted">Not run yet. Use mode <code>re-exploit</code> (or <code>full</code> with a patched target).</p>
+      </div>
+    </section>
+
+    <!-- ── Recon detail ────────────────────────────────────────────── -->
+    <section class="card">
+      <h2>Reconnaissance Summary</h2>
+      <div id="recon" class="recon-grid"><p class="muted">No recon data yet.</p></div>
+    </section>
+  </main>
+
+  <footer>
+    <span>CyberPulse Dashboard · local-only · <a href="/api/report" target="_blank">raw report JSON</a></span>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>VulnApp — Login</title>
+        <style>
+            body {
+                font-family: monospace;
+                background: #1a1a1a;
+                color: #00ff41;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+            }
+            .box {
+                border: 1px solid #00ff41;
+                padding: 2rem;
+                min-width: 300px;
+            }
+            h2 {
+                margin-top: 0;
+                text-align: center;
+            }
+            input {
+                width: 100%;
+                padding: 0.4rem;
+                margin: 0.4rem 0 1rem;
+                background: #111;
+                color: #00ff41;
+                border: 1px solid #00ff41;
+                box-sizing: border-box;
+                font-family: monospace;
+            }
+            button {
+                width: 100%;
+                padding: 0.5rem;
+                background: #00ff41;
+                color: #111;
+                border: none;
+                cursor: pointer;
+                font-family: monospace;
+                font-weight: bold;
+            }
+            .warn {
+                color: #ff4444;
+                font-size: 0.75rem;
+                text-align: center;
+                margin-top: 1rem;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="box">
+            <h2>[ VulnApp Login ]</h2>
+            <!-- VULN: No CSRF token on this form -->
+            <form method="POST" action="/login">
+                <label>Username</label>
+                <input
+                    type="text"
+                    name="username"
+                    autocomplete="off"
+                    required
+                />
+                <label>Password</label>
+                <input type="password" name="password" required />
+                <button type="submit">LOGIN</button>
+            </form>
+            <p class="warn">⚠ Educational use only</p>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,145 @@
+# CyberPulse SAST rules (Semgrep)
+# ================================
+# Rules targeting the vulnerability classes demoed by VulnApp.
+#
+# Design goal: each rule matches the *vulnerable* pattern only, so re-scanning
+# vulnapp_patched/ after remediation must return zero findings for that rule.
+# That is what makes the SAST re-scan a meaningful verification step.
+#
+# Usage:
+#   semgrep --config configs/semgrep/cyberpulse.yml --json vulnapp/
+#   (or via the agent: python main.py --mode sast-only)
+rules:
+  - id: cyberpulse.sql-injection-fstring
+    languages: [python]
+    severity: ERROR
+    message: >-
+      SQL query built with an f-string and executed — user input can alter the query.
+      Use a parameterized query: cursor.execute("... WHERE x = ?", (value,)).
+    metadata:
+      cwe: ["CWE-89: Improper Neutralization of Special Elements used in an SQL Command"]
+      owasp: ["A03:2021 - Injection"]
+      confidence: HIGH
+      impact: HIGH
+      category: security
+    patterns:
+      # The f-string may be assigned to a variable first (query = f"SELECT ... {x}"),
+      # so the SELECT does not have to sit immediately after the quote. Anchoring
+      # with .* before/after keeps this line-based match independent of where the
+      # f-string starts on the line.
+      - pattern-regex: '(?i).*\bf["\x27].*?SELECT\b.*?\{.*'
+      - pattern-not-regex: '(?i)(parameterized|placeholders?)\s*:'
+
+  - id: cyberpulse.sql-injection-string-format
+    languages: [python]
+    severity: ERROR
+    message: >-
+      SQL query assembled with % or .format() before execution. Use parameterized queries.
+    metadata:
+      cwe: ["CWE-89: Improper Neutralization of Special Elements used in an SQL Command"]
+      owasp: ["A03:2021 - Injection"]
+      confidence: MEDIUM
+      category: security
+    pattern-regex: '(?i)["\x27]\s*SELECT\b[^"\x27]*["\x27]\s*(%|\.format\()'
+
+  - id: cyberpulse.command-injection-shell-true
+    languages: [python]
+    severity: ERROR
+    message: >-
+      subprocess called with shell=True. If any argument comes from user input this is
+      remote command execution. Pass an argument list and use shell=False.
+    metadata:
+      cwe: ["CWE-78: Improper Neutralization of Special Elements used in an OS Command"]
+      owasp: ["A03:2021 - Injection"]
+      confidence: HIGH
+      impact: HIGH
+      category: security
+    patterns:
+      - pattern-either:
+          - pattern: subprocess.$FUNC(..., shell=True, ...)
+          - pattern: subprocess.Popen(..., shell=True, ...)
+          - pattern: os.system(...)
+          - pattern: os.popen(...)
+
+  - id: cyberpulse.path-traversal-unvalidated-open
+    languages: [python]
+    severity: WARNING
+    message: >-
+      File path built with os.path.join from untrusted input and opened without
+      canonicalization. Resolve with os.path.realpath() and verify the result stays
+      inside the intended base directory.
+    metadata:
+      cwe: ["CWE-22: Improper Limitation of a Pathname to a Restricted Directory"]
+      owasp: ["A01:2021 - Broken Access Control"]
+      confidence: MEDIUM
+      category: security
+    patterns:
+      - pattern: |
+          $FP = os.path.join(...)
+          ...
+          open($FP, ...)
+
+  - id: cyberpulse.hardcoded-credential
+    languages: [python]
+    severity: ERROR
+    message: >-
+      Credential-looking value assigned a string literal. Load secrets from the
+      environment or a secrets manager instead of shipping them in source.
+    metadata:
+      cwe: ["CWE-798: Use of Hard-coded Credentials"]
+      owasp: ["A07:2021 - Identification and Authentication Failures"]
+      confidence: HIGH
+      category: security
+    patterns:
+      - pattern: $VAR = "..."
+      - pattern-not: $OBJ.$ATTR = "..."     # attribute assignments have their own rule
+      - metavariable-regex:
+          metavariable: $VAR
+          regex: '(?i).*(password|passwd|secret|api_key|apikey|access_token|private_key).*'
+      - metavariable-regex:
+          metavariable: $VAR
+          regex: '(?!.*(placeholder|example|dummy|test|changeme)).*'
+      - pattern-not: $VAR = ""
+      - pattern-not: $VAR = None
+
+  - id: cyberpulse.jwt-verification-disabled
+    languages: [python]
+    severity: ERROR
+    message: >-
+      JWT decoded without signature verification (verify_signature=False or alg:none).
+      Always verify with an explicit algorithm and a strong secret.
+    metadata:
+      cwe: ["CWE-347: Improper Verification of Cryptographic Signature"]
+      owasp: ["A02:2021 - Cryptographic Failures"]
+      confidence: HIGH
+      category: security
+    patterns:
+      - pattern-either:
+          - pattern: 'jwt.decode(..., options={"verify_signature": False}, ...)'
+          - pattern: 'jwt.decode(..., algorithms=["none"], ...)'
+          - pattern: 'jwt.decode($T, options={"verify_signature": False})'
+
+  - id: cyberpulse.flask-debug-enabled
+    languages: [python]
+    severity: WARNING
+    message: >-
+      Flask app.run(debug=True) exposes the Werkzeug debugger (RCE via the console).
+      Never enable debug mode in a deployed service.
+    metadata:
+      cwe: ["CWE-489: Active Debug Code"]
+      owasp: ["A05:2021 - Security Misconfiguration"]
+      confidence: HIGH
+      category: security
+    pattern: $APP.run(..., debug=True, ...)
+
+  - id: cyberpulse.flask-hardcoded-secret-key
+    languages: [python]
+    severity: WARNING
+    message: >-
+      Flask secret_key hardcoded in source. Load it from the environment and rotate it.
+    metadata:
+      cwe: ["CWE-798: Use of Hard-coded Credentials"]
+      owasp: ["A02:2021 - Cryptographic Failures"]
+      confidence: HIGH
+      category: security
+    pattern: $APP.secret_key = "..."

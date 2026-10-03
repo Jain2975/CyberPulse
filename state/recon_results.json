@@ -1,0 +1,289 @@
+{
+  "status": "complete",
+  "target": "http://127.0.0.1:5000",
+  "alive": true,
+  "open_ports": [
+    5000
+  ],
+  "endpoints": [
+    {
+      "path": "/",
+      "status": 200,
+      "methods": [
+        "GET"
+      ],
+      "content_type": "application/json",
+      "content_length": 186,
+      "redirect": null,
+      "body_preview": "{\n  \"app\": \"VulnApp\",\n  \"endpoints\": [\n    \"/login\",\n    \"/file\",\n    \"/transfer\",\n    \"/admin\",\n    \"/ping\",\n    \"/api/profile\"\n  ],\n  \"stack\": \"Flask + SQLite\",\n  \"version\": \"1.0.0\"\n}\n"
+    },
+    {
+      "path": "/login",
+      "status": 200,
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "content_type": "text/html; charset=utf-8",
+      "content_length": 2176,
+      "redirect": null,
+      "body_preview": "<!doctype html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"UTF-8\" />\n        <title>VulnApp \u2014 Login</title>\n        <style>\n            body {\n                font-family: monospace;\n         "
+    },
+    {
+      "path": "/admin",
+      "status": 401,
+      "methods": [
+        "GET"
+      ],
+      "content_type": "application/json",
+      "content_length": 30,
+      "redirect": null,
+      "body_preview": "{\n  \"error\": \"Unauthorized\"\n}\n"
+    },
+    {
+      "path": "/api/profile",
+      "status": 401,
+      "methods": [
+        "GET"
+      ],
+      "content_type": "application/json",
+      "content_length": 31,
+      "redirect": null,
+      "body_preview": "{\n  \"error\": \"Missing token\"\n}\n"
+    },
+    {
+      "path": "/file",
+      "status": 400,
+      "methods": [
+        "GET"
+      ],
+      "content_type": "application/json",
+      "content_length": 84,
+      "redirect": null,
+      "body_preview": "{\n  \"error\": \"Missing 'name' query parameter\",\n  \"usage\": \"/file?name=<filename>\"\n}\n"
+    },
+    {
+      "path": "/transfer",
+      "status": 200,
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "content_type": "text/html; charset=utf-8",
+      "content_length": 2420,
+      "redirect": null,
+      "body_preview": "<!doctype html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"UTF-8\" />\n        <title>VulnApp \u2014 Transfer</title>\n        <style>\n            body {\n                font-family: monospace;\n      "
+    },
+    {
+      "path": "/change_password",
+      "status": 405,
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "content_type": "text/html; charset=utf-8",
+      "content_length": 153,
+      "redirect": null,
+      "body_preview": "<!doctype html>\n<html lang=en>\n<title>405 Method Not Allowed</title>\n<h1>Method Not Allowed</h1>\n<p>The method is not allowed for the requested URL.</p>\n"
+    },
+    {
+      "path": "/ping",
+      "status": 200,
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "content_type": "application/json",
+      "content_length": 54,
+      "redirect": null,
+      "body_preview": "{\n  \"usage\": \"POST with JSON: {\\\"host\\\": \\\"<ip>\\\"}\"\n}\n"
+    },
+    {
+      "path": "/health",
+      "status": 200,
+      "methods": [
+        "GET"
+      ],
+      "content_type": "application/json",
+      "content_length": 41,
+      "redirect": null,
+      "body_preview": "{\n  \"app\": \"vulnapp\",\n  \"status\": \"ok\"\n}\n"
+    },
+    {
+      "path": "/console",
+      "status": 200,
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "content_type": "text/html; charset=utf-8",
+      "content_length": 1563,
+      "redirect": null,
+      "body_preview": "<!doctype html>\n<html lang=en>\n  <head>\n    <title>Console // Werkzeug Debugger</title>\n    <link rel=\"stylesheet\" href=\"?__debugger__=yes&amp;cmd=resource&amp;f=style.css\">\n    <link rel=\"shortcut ic"
+    }
+  ],
+  "tech_stack": {
+    "server": "Werkzeug/2.3.7 Python/3.12.3",
+    "framework": "Flask (Python)",
+    "language": "Python",
+    "database": "SQLite",
+    "health_info": {
+      "app": "vulnapp",
+      "status": "ok"
+    },
+    "debug_mode": false
+  },
+  "security_headers": {
+    "Content-Security-Policy": "MISSING",
+    "X-Frame-Options": "MISSING",
+    "X-Content-Type-Options": "MISSING",
+    "Strict-Transport-Security": "MISSING",
+    "X-XSS-Protection": "MISSING",
+    "Referrer-Policy": "MISSING",
+    "Permissions-Policy": "MISSING",
+    "Cross-Origin-Opener-Policy": "MISSING"
+  },
+  "forms": [
+    {
+      "endpoint": "/login",
+      "action": "/login",
+      "method": "POST",
+      "fields": [
+        {
+          "name": "username",
+          "type": "text"
+        },
+        {
+          "name": "password",
+          "type": "password"
+        }
+      ],
+      "has_csrf_token": false
+    },
+    {
+      "endpoint": "/transfer",
+      "action": "/transfer",
+      "method": "POST",
+      "fields": [
+        {
+          "name": "from",
+          "type": "text"
+        },
+        {
+          "name": "to",
+          "type": "text"
+        },
+        {
+          "name": "amount",
+          "type": "number"
+        }
+      ],
+      "has_csrf_token": false
+    },
+    {
+      "endpoint": "/console",
+      "action": "/console",
+      "method": "GET",
+      "fields": [
+        {
+          "name": "pin",
+          "type": "text"
+        },
+        {
+          "name": "btn",
+          "type": "submit"
+        }
+      ],
+      "has_csrf_token": false
+    }
+  ],
+  "attack_vectors": [
+    {
+      "id": "sqli_login",
+      "endpoint": "/login",
+      "type": "sql_injection",
+      "method": "POST",
+      "params": [
+        "username",
+        "password"
+      ],
+      "severity": "CRITICAL",
+      "rationale": "Login form likely uses username in raw SQL query"
+    },
+    {
+      "id": "hc_admin",
+      "endpoint": "/admin",
+      "type": "hardcoded_credentials",
+      "method": "GET",
+      "params": [
+        "X-Admin-Password (header)"
+      ],
+      "severity": "CRITICAL",
+      "rationale": "Admin endpoint likely uses hardcoded password in source"
+    },
+    {
+      "id": "jwt_profile",
+      "endpoint": "/api/profile",
+      "type": "broken_jwt",
+      "method": "GET",
+      "params": [
+        "Authorization (header)"
+      ],
+      "severity": "HIGH",
+      "rationale": "JWT endpoint may accept alg:none unsigned tokens"
+    },
+    {
+      "id": "pt_file",
+      "endpoint": "/file",
+      "type": "path_traversal",
+      "method": "GET",
+      "params": [
+        "name"
+      ],
+      "severity": "HIGH",
+      "rationale": "File endpoint takes 'name' param \u2014 no sanitization likely"
+    },
+    {
+      "id": "cmdi_ping",
+      "endpoint": "/ping",
+      "type": "command_injection",
+      "method": "POST",
+      "params": [
+        "host"
+      ],
+      "severity": "CRITICAL",
+      "rationale": "Ping endpoint passes user input to shell command"
+    },
+    {
+      "id": "csrf_login",
+      "endpoint": "/login",
+      "type": "csrf",
+      "method": "POST",
+      "params": [
+        "username",
+        "password"
+      ],
+      "severity": "HIGH",
+      "rationale": "POST form without CSRF token is vulnerable to cross-site forgery"
+    },
+    {
+      "id": "csrf_transfer",
+      "endpoint": "/transfer",
+      "type": "csrf",
+      "method": "POST",
+      "params": [
+        "from",
+        "to",
+        "amount"
+      ],
+      "severity": "HIGH",
+      "rationale": "POST form without CSRF token is vulnerable to cross-site forgery"
+    }
+  ],
+  "_meta": {
+    "agent": "ReconAgent",
+    "target": "http://127.0.0.1:5000",
+    "timestamp": "2026-10-03T16:47:19.886443Z",
+    "duration_s": 0.14
+  }
+}

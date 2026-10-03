@@ -1,0 +1,56 @@
+{
+  "status": "complete",
+  "tool": "semgrep 1.159.0",
+  "runner": "native",
+  "config": "configs/semgrep/cyberpulse.yml",
+  "scan_paths": [
+    "vulnapp_patched"
+  ],
+  "duration_s": 3.5,
+  "summary": {
+    "total": 2,
+    "by_severity": {
+      "HIGH": 1,
+      "MEDIUM": 1,
+      "LOW": 0,
+      "INFO": 0
+    },
+    "files_scanned": 1,
+    "files_with_findings": 1,
+    "rules_triggered": [
+      "configs.semgrep.cyberpulse.command-injection-shell-true",
+      "configs.semgrep.cyberpulse.flask-hardcoded-secret-key"
+    ],
+    "errors": 0
+  },
+  "findings": [
+    {
+      "id": "configs.semgrep.cyberpulse.command-injection-shell-true:vulnapp_patched/app.py:210",
+      "rule": "configs.semgrep.cyberpulse.command-injection-shell-true",
+      "severity": "HIGH",
+      "cwe": "CWE-78",
+      "owasp": "A03:2021 - Injection",
+      "file": "vulnapp_patched/app.py",
+      "line": 210,
+      "message": "subprocess called with shell=True. If any argument comes from user input this is remote command execution. Pass an argument list and use shell=False.",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "configs.semgrep.cyberpulse.flask-hardcoded-secret-key:vulnapp_patched/app.py:30",
+      "rule": "configs.semgrep.cyberpulse.flask-hardcoded-secret-key",
+      "severity": "MEDIUM",
+      "cwe": "CWE-798",
+      "owasp": "A02:2021 - Cryptographic Failures",
+      "file": "vulnapp_patched/app.py",
+      "line": 30,
+      "message": "Flask secret_key hardcoded in source. Load it from the environment and rotate it.",
+      "confidence": "HIGH"
+    }
+  ],
+  "_meta": {
+    "agent": "SastAgent",
+    "target": "local",
+    "timestamp": "2026-10-03T05:20:53.154082Z",
+    "duration_s": 5.87
+  }
+}

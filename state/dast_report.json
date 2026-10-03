@@ -1,0 +1,25 @@
+{
+  "status": "skipped",
+  "reason": "docker is not available",
+  "target": "http://localhost:5000",
+  "install_hints": [
+    "docker pull ghcr.io/zaproxy/zaproxy:stable",
+    "curl -fsSL https://get.docker.com | sh   # WSL2 / Ubuntu"
+  ],
+  "findings": [],
+  "summary": {
+    "total_alerts": 0,
+    "by_risk": {
+      "HIGH": 0,
+      "MEDIUM": 0,
+      "LOW": 0,
+      "INFO": 0
+    }
+  },
+  "_meta": {
+    "agent": "DastAgent",
+    "target": "http://localhost:5000",
+    "timestamp": "2026-10-03T05:20:42.514486Z",
+    "duration_s": 0.01
+  }
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "csrf_001",
+    "name": "Forged transfer",
+    "endpoint": "/transfer",
+    "method": "POST",
+    "data": {"to": "attacker", "amount": "9999"},
+    "description": "Submits a forged cross-site transfer with no CSRF token"
+  },
+  {
+    "id": "csrf_002",
+    "name": "Password change CSRF",
+    "endpoint": "/change_password",
+    "method": "POST",
+    "data": {"new_password": "hacked123"},
+    "description": "Changes user password via forged request"
+  }
+]

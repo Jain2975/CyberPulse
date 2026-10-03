@@ -1,0 +1,30 @@
+{
+  "status": "complete",
+  "tool": "semgrep 1.159.0",
+  "runner": "native",
+  "config": "configs/semgrep/cyberpulse.yml",
+  "scan_paths": [
+    "vulnapp_patched"
+  ],
+  "duration_s": 4.95,
+  "summary": {
+    "total": 0,
+    "by_severity": {
+      "HIGH": 0,
+      "MEDIUM": 0,
+      "LOW": 0,
+      "INFO": 0
+    },
+    "files_scanned": 1,
+    "files_with_findings": 0,
+    "rules_triggered": [],
+    "errors": 0
+  },
+  "findings": [],
+  "_meta": {
+    "agent": "SastAgent",
+    "target": "local",
+    "timestamp": "2026-10-03T05:22:08.879910Z",
+    "duration_s": 6.72
+  }
+}
