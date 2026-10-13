@@ -16,9 +16,6 @@ Validator Agent: Analyzes response signatures, status codes, and database state 
 
 Patching Agent: Reads the source code of the vulnerable application, generates security fixes, applies them, and re-runs the exploit suite to verify remediation.
 
-Why It’s Tough: Forces agents to handle complex multi-step reasoning chains, execute shell tools dynamically, interpret structured/unstructured outputs, and write precise code fixes.
-I am thinking doing this and SO I need you to make a very good Guide IN this SO that IN future I can give it to other agents as well .. OK And also need to do planning and all and make starting files as well
-
 ---
 
 ## Pipeline
