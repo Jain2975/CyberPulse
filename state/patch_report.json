@@ -45,12 +45,12 @@
     "hygiene_ok": true,
     "stale_symbols": [],
     "smoke_test": "passed",
-    "smoke_detail": "Booted on 127.0.0.1:53927 and /health returned 200"
+    "smoke_detail": "Booted on 127.0.0.1:39569 and /health returned 200"
   },
   "_meta": {
     "agent": "PatchingAgent",
     "target": "http://127.0.0.1:5000",
-    "timestamp": "2026-10-03T16:47:20.551876Z",
-    "duration_s": 0.55
+    "timestamp": "2026-10-12T10:13:17.505470Z",
+    "duration_s": 0.56
   }
 }

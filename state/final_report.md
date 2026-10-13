@@ -1,6 +1,6 @@
 # CyberPulse Final Security Report
 
-**Generated:** 2026-10-03 16:47 UTC  
+**Generated:** 2026-10-12 10:13 UTC  
 **Target:** http://127.0.0.1:5000  
 **Pipeline:** Recon → Exploit → Validate → Patch
 
@@ -115,7 +115,7 @@
 | No stale symbols / known credentials | ✅ PASS |
 | Smoke test (boots + /health = 200) | ✅ PASSED |
 
-**Detail:** Booted on 127.0.0.1:53927 and /health returned 200
+**Detail:** Booted on 127.0.0.1:39569 and /health returned 200
 
 
 ---

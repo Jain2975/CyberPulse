@@ -367,7 +367,7 @@
   "_meta": {
     "agent": "ValidatorAgent",
     "target": "http://127.0.0.1:5000",
-    "timestamp": "2026-10-03T16:47:20.000640Z",
-    "duration_s": 0.03
+    "timestamp": "2026-10-12T10:13:16.940707Z",
+    "duration_s": 0.04
   }
 }

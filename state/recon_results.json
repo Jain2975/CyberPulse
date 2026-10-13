@@ -283,7 +283,7 @@
   "_meta": {
     "agent": "ReconAgent",
     "target": "http://127.0.0.1:5000",
-    "timestamp": "2026-10-03T16:47:19.886443Z",
-    "duration_s": 0.14
+    "timestamp": "2026-10-12T10:13:16.795327Z",
+    "duration_s": 0.21
   }
 }

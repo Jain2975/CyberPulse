@@ -1,0 +1,313 @@
+╭───────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│                                                                                                       │
+│  ██████╗ ██╗   ██╗██████╗ ███████╗██████╗ ██████╗ ██╗   ██╗██╗     ███████╗███████╗                   │
+│ ██╔════╝ ╚██╗ ██╔╝██╔══██╗██╔════╝██╔══██╗██╔══██╗██║   ██║██║     ██╔════╝██╔════╝                   │
+│ ██║       ╚████╔╝ ██████╔╝█████╗  ██████╔╝██████╔╝██║   ██║██║     ███████╗█████╗                     │
+│ ██║        ╚██╔╝  ██╔══██╗██╔══╝  ██╔══██╗██╔═══╝ ██║   ██║██║     ╚════██║██╔══╝                     │
+│ ╚██████╗   ██║   ██████╔╝███████╗██║  ██║██║     ╚██████╔╝███████╗███████║███████╗                    │
+│  ╚═════╝   ╚═╝   ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝      ╚═════╝ ╚══════╝╚══════╝╚══════╝                    │
+│                                                                                                       │
+│   Autonomous Penetration Testing & Vulnerability Exploitation Swarm                                   │
+│   ⚠️  FOR ISOLATED SANDBOX / EDUCATIONAL USE ONLY ⚠️                                                    │
+│                                                                                                       │
+╰───────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Target: http://localhost:5000
+Mode:   full
+
+
+╭───────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Phase 1: Reconnaissance                                                                               │
+│ Mapping endpoints, fingerprinting stack, cataloging attack vectors                                    │
+╰───────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[10/03/26 22:32:15] INFO     [ReconAgent] Setting up...                                  base_agent.py:89
+──────────────────────────────────────── 🔍 RECON AGENT STARTING ────────────────────────────────────────
+                    INFO     [ReconAgent] Target is alive at http://localhost:5000      base_agent.py:192
+
+Step 1: Port Scan
+                    INFO     Scanning 18 ports on localhost...                         recon_agent.py:139
+  [INFO] Port 5000 OPEN
+                    INFO     Open ports: [5000]                                        recon_agent.py:149
+
+Step 2: Endpoint Discovery
+  200 / [GET]
+  200 /login [GET, POST]
+  401 /admin [GET]
+  401 /api/profile [GET]
+  400 /file [GET]
+  200 /transfer [GET, POST]
+  405 /change_password [GET, POST]
+  200 /ping [GET, POST]
+  200 /health [GET]
+  200 /console [GET, POST]
+
+Step 3: Tech Stack Fingerprinting
+                    INFO     Tech stack: {'server': 'Werkzeug/2.3.7 Python/3.12.3',    recon_agent.py:243
+                             'framework': 'Flask (Python)', 'language': 'Python',                        
+                             'database': 'SQLite', 'health_info': {'app': 'vulnapp',                     
+                             'status': 'ok'}, 'debug_mode': False}                                       
+
+Step 4: Security Header Audit
+  [MEDIUM] Missing security header: Content-Security-Policy
+  [MEDIUM] Missing security header: X-Frame-Options
+  [MEDIUM] Missing security header: X-Content-Type-Options
+  [MEDIUM] Missing security header: Strict-Transport-Security
+  [MEDIUM] Missing security header: X-XSS-Protection
+  [MEDIUM] Missing security header: Referrer-Policy
+  [MEDIUM] Missing security header: Permissions-Policy
+  [MEDIUM] Missing security header: Cross-Origin-Opener-Policy
+
+Step 5: Form Extraction
+  [HIGH] Form at /login has no CSRF token (method: POST)
+  [HIGH] Form at /transfer has no CSRF token (method: POST)
+
+Step 6: Cataloging Attack Vectors
+                    INFO     Cataloged 7 attack vectors                                recon_agent.py:383
+─────────────────────────────────────────── 🔍 RECON SUMMARY ────────────────────────────────────────────
+                       Attack Vectors Found                        
+┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━┓
+┃ ID            ┃ Type                  ┃ Endpoint     ┃ Severity ┃
+┡━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━┩
+│ sqli_login    │ sql_injection         │ /login       │ CRITICAL │
+├───────────────┼───────────────────────┼──────────────┼──────────┤
+│ hc_admin      │ hardcoded_credentials │ /admin       │ CRITICAL │
+├───────────────┼───────────────────────┼──────────────┼──────────┤
+│ jwt_profile   │ broken_jwt            │ /api/profile │ HIGH     │
+├───────────────┼───────────────────────┼──────────────┼──────────┤
+│ pt_file       │ path_traversal        │ /file        │ HIGH     │
+├───────────────┼───────────────────────┼──────────────┼──────────┤
+│ cmdi_ping     │ command_injection     │ /ping        │ CRITICAL │
+├───────────────┼───────────────────────┼──────────────┼──────────┤
+│ csrf_login    │ csrf                  │ /login       │ HIGH     │
+├───────────────┼───────────────────────┼──────────────┼──────────┤
+│ csrf_transfer │ csrf                  │ /transfer    │ HIGH     │
+└───────────────┴───────────────────────┴──────────────┴──────────┘
+
+✓ Endpoints found: 10
+✓ Attack vectors: 7
+✓ Open ports: [5000]
+                    INFO     [ReconAgent] State saved →                                 base_agent.py:142
+                             /home/aarus/CyberPulse/state/recon_results.json                             
+                    INFO     [ReconAgent] Completed in 0.16s                             base_agent.py:95
+
+╭───────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Phase 2: Exploitation                                                                                 │
+│ Executing payloads against discovered attack vectors                                                  │
+╰───────────────────────────────────────────────────────────────────────────────────────────────────────╯
+                    INFO     [ExploitAgent] Setting up...                                base_agent.py:89
+─────────────────────────────────────── 💥 EXPLOIT AGENT STARTING ───────────────────────────────────────
+                    INFO     [ExploitAgent] Target is alive at http://localhost:5000    base_agent.py:192
+    FAILED SQLi : ' OR '1'='1
+    POTENTIAL_SUCCESS SQLi : admin'--
+    FAILED SQLi : ' UNION SELECT 1,2,3--
+    FAILED SQLi : ' OR SLEEP(3)--
+    FAILED SQLi : ' UNION SELECT sqlite_version(),2--
+    POTENTIAL_SUCCESS Hardcoded cred found: 'admin123'
+    POTENTIAL_SUCCESS JWT  (alg_none)
+                    INFO     JWT secret found: 'secret'                              exploit_agent.py:472
+    POTENTIAL_SUCCESS JWT  (weak_secret)
+    POTENTIAL_SUCCESS JWT  (claim_tamper)
+    FAILED Path Traversal : ../../../../etc/passwd
+    FAILED Path Traversal : ..%2F..%2F..%2Fetc%2Fpasswd
+    FAILED Path Traversal : ..%252F..%252Fetc%252Fpasswd
+    FAILED Path Traversal : ..\..\..\windows\system.ini
+    FAILED Path Traversal : ../app.py
+    POTENTIAL_SUCCESS CMDi : 127.0.0.1; id
+    FAILED CMDi : 127.0.0.1 | whoami
+    FAILED CMDi : `cat /etc/passwd`
+    FAILED CMDi : $(id)
+    POTENTIAL_SUCCESS CMDi : 127.0.0.1
+id
+    FAILED CSRF : /transfer
+
+────────────────────────────────────────── 💥 EXPLOIT SUMMARY ───────────────────────────────────────────
+Exploits attempted: 20
+Potential successes: 7
+                    INFO     [ExploitAgent] State saved →                               base_agent.py:142
+                             /home/aarus/CyberPulse/state/exploit_results.json                           
+                    INFO     [ExploitAgent] Completed in 0.07s                           base_agent.py:95
+
+╭───────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Phase 3: Validation                                                                                   │
+│ Re-verifying potential successes, classifying findings                                                │
+╰───────────────────────────────────────────────────────────────────────────────────────────────────────╯
+                    INFO     [ValidatorAgent] Setting up...                              base_agent.py:89
+────────────────────────────────────── ✅ VALIDATOR AGENT STARTING ──────────────────────────────────────
+
+Validating 20 exploit attempts...
+
+  FAILED       sql_injection             /login 
+  CONFIRMED    sql_injection             /login 
+  FAILED       sql_injection             /login 
+  FAILED       sql_injection             /login 
+  FAILED       sql_injection             /login 
+  CONFIRMED    hardcoded_credentials     /admin 
+  CONFIRMED    broken_jwt                /api/profile 
+  CONFIRMED    broken_jwt                /api/profile 
+  CONFIRMED    broken_jwt                /api/profile 
+  FAILED       path_traversal            /file 
+  FAILED       path_traversal            /file 
+  FAILED       path_traversal            /file 
+  FAILED       path_traversal            /file 
+  FAILED       path_traversal            /file 
+  CONFIRMED    command_injection         /ping 
+  FAILED       command_injection         /ping 
+  FAILED       command_injection         /ping 
+  FAILED       command_injection         /ping 
+  CONFIRMED    command_injection         /ping 
+  FAILED       csrf                      /transfer 
+───────────────────────────────────────── ✅ VALIDATION REPORT ──────────────────────────────────────────
+                                        Confirmed Vulnerabilities                                        
+┏━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ ID                   ┃ Type                  ┃ Endpoint     ┃ Severity ┃ CVSS ┃ Evidence              ┃
+┡━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━┩
+│ sqli_002_sqli_login  │ sql_injection         │ /login       │ CRITICAL │ 9.8  │ Matched indicators:   │
+│                      │                       │              │          │      │ welcome_message,      │
+│                      │                       │              │          │      │ jwt_token_returned;   │
+│                      │                       │              │          │      │ HTTP 200 returned     │
+├──────────────────────┼───────────────────────┼──────────────┼──────────┼──────┼───────────────────────┤
+│ hc_admin123_hc_admin │ hardcoded_credentials │ /admin       │ CRITICAL │ 9.1  │ Matched indicators:   │
+│                      │                       │              │          │      │ admin_data_returned;  │
+│                      │                       │              │          │      │ HTTP 200 returned     │
+├──────────────────────┼───────────────────────┼──────────────┼──────────┼──────┼───────────────────────┤
+│ jwt_001_jwt_profile  │ broken_jwt            │ /api/profile │ HIGH     │ 8.1  │ Matched indicators:   │
+│                      │                       │              │          │      │ admin_role_confirmed, │
+│                      │                       │              │          │      │ privileged_data_retu… │
+│                      │                       │              │          │      │ HTTP 200 returned     │
+├──────────────────────┼───────────────────────┼──────────────┼──────────┼──────┼───────────────────────┤
+│ jwt_002_jwt_profile  │ broken_jwt            │ /api/profile │ HIGH     │ 8.1  │ Matched indicators:   │
+│                      │                       │              │          │      │ admin_role_confirmed, │
+│                      │                       │              │          │      │ privileged_data_retu… │
+│                      │                       │              │          │      │ HTTP 200 returned     │
+├──────────────────────┼───────────────────────┼──────────────┼──────────┼──────┼───────────────────────┤
+│ jwt_003_jwt_profile  │ broken_jwt            │ /api/profile │ HIGH     │ 8.1  │ Matched indicators:   │
+│                      │                       │              │          │      │ admin_role_confirmed, │
+│                      │                       │              │          │      │ privileged_data_retu… │
+│                      │                       │              │          │      │ HTTP 200 returned     │
+├──────────────────────┼───────────────────────┼──────────────┼──────────┼──────┼───────────────────────┤
+│ cmdi_001_cmdi_ping   │ command_injection     │ /ping        │ CRITICAL │ 9.8  │ Matched indicators:   │
+│                      │                       │              │          │      │ user_id_leaked; HTTP  │
+│                      │                       │              │          │      │ 200 returned          │
+├──────────────────────┼───────────────────────┼──────────────┼──────────┼──────┼───────────────────────┤
+│ cmdi_005_cmdi_ping   │ command_injection     │ /ping        │ CRITICAL │ 9.8  │ Matched indicators:   │
+│                      │                       │              │          │      │ user_id_leaked; HTTP  │
+│                      │                       │              │          │      │ 200 returned          │
+└──────────────────────┴───────────────────────┴──────────────┴──────────┴──────┴───────────────────────┘
+
+Confirmed: 7/20
+Partial: 0
+Failed: 13
+                    INFO     [ValidatorAgent] State saved →                             base_agent.py:142
+                             /home/aarus/CyberPulse/state/validation_report.json                         
+                    INFO     [ValidatorAgent] Completed in 0.03s                         base_agent.py:95
+
+╭───────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Phase 4: Patching                                                                                     │
+│ Reading source code, applying targeted security fixes                                                 │
+╰───────────────────────────────────────────────────────────────────────────────────────────────────────╯
+                    INFO     [PatchingAgent] Setting up...                               base_agent.py:89
+────────────────────────────────────── 🩹 PATCHING AGENT STARTING ───────────────────────────────────────
+Found 7 confirmed vulnerabilities to patch.
+✓ Copied vulnapp → /home/aarus/CyberPulse/vulnapp_patched
+
+→ Patching: sql_injection
+
+  Before (SQL Injection):
+# VULNERABLE: raw SQL string formatting                                                                  
+    query = f"SELECT * FROM users WHERE username='{username}' AND password='{password}'"                 
+    try:                                                                                                 
+        db = get_db()                                                                                    
+        user = db.execute(query).fetchone()                                                              
+    except Exception as e:                                                                               
+        return jsonify({"error": str(e), "query": query}), 500                                           
+
+  After (SQL Injection):
+# PATCHED: parameterized query — prevents SQL injection                                                  
+    try:                                                                                                 
+        db = get_db()                                                                                    
+        user = db.execute(                                                                               
+            "SELECT * FROM users WHERE username=? AND password=?",                                       
+            (username, password)                                                                         
+        ).fetchone()                                                                                     
+    except Exception as e:                                                                               
+        return jsonify({"error": "Database error"}), 500  # Do not leak error details                    
+
+→ Patching: hardcoded_credentials
+  ✓ Hardcoded credential replaced with env var + random fallback
+
+→ Patching: broken_jwt
+
+  Before (Broken JWT):
+# VULNERABLE: options={"verify_signature": False} — accepts unsigned tokens                              
+        payload = jwt.decode(token, options={"verify_signature": False}, algorithms=["HS256", "none"])   
+
+  After (Broken JWT):
+# PATCHED: enforce full signature verification, disallow alg:none                                        
+        payload = jwt.decode(token, app.secret_key, algorithms=["HS256"])                                
+
+→ Patching: command_injection
+
+  Before (Command Injection):
+# VULNERABLE: shell=True with user input (cross-platform ping syntax)                                    
+    count_flag = "-n" if platform.system().lower() == "windows" else "-c"                                
+    try:                                                                                                 
+        result = subprocess.check_output(                                                                
+            f"ping {count_flag} 1 {host}",                                                               
+            shell=True,                                                                                  
+            stderr=subprocess.STDOUT,                                                                    
+            timeout=5                                                                                    
+        )                                                                                                
+
+  After (Command Injection):
+# PATCHED: safe subprocess call with argument list (no shell=True)                                       
+    # Validate host format before passing to subprocess                                                  
+    import re as _re                                                                                     
+    if not _re.match(r"^[a-zA-Z0-9._-]{1,253}$", host):                                                  
+        return jsonify({"error": "Invalid host format"}), 400                                            
+    count_flag = "-n" if platform.system().lower() == "windows" else "-c"                                
+    try:                                                                                                 
+        result = subprocess.check_output(                                                                
+            ["ping", count_flag, "1", host],   # list form — no shell injection possible                 
+            shell=False,                                                                                 
+            stderr=subprocess.STDOUT,                                                                    
+            timeout=5                                                                                    
+        )                                                                                                
+
+→ Hardening: runtime_config
+
+  Before (Runtime hardening):
+app.run(host="0.0.0.0", port=5000, debug=True)                                                           
+
+  After (Runtime hardening):
+app.run(host=os.environ.get("HOST", "127.0.0.1"),                                                        
+            port=int(os.environ.get("PORT", "5001")),                                                    
+            debug=False)  # PATCHED: debug disabled, bind configurable                                   
+
+  Before (Seed dir fix):
+    os.makedirs("files", exist_ok=True)                                                                  
+    with open("files/readme.txt", "w") as f:                                                             
+        f.write("Welcome to VulnApp! This is a safe file.\n")                                            
+
+  After (Seed dir fix):
+    # PATCHED: seed the same directory that /file serves from (module-relative)                          
+    files_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "files")                        
+    os.makedirs(files_dir, exist_ok=True)                                                                
+    with open(os.path.join(files_dir, "readme.txt"), "w", encoding="utf-8") as f:                        
+        f.write("Welcome to VulnApp! This is a safe file.\n")                                            
+
+✓ Patched source written to: /home/aarus/CyberPulse/vulnapp_patched/app.py
+
+Verifying patched app...
+  ✓ Syntax check passed
+  ✓ No stale symbols or known credentials
+  ✓ Smoke test passed (booted on port 55993)
+✓ Final report written to: /home/aarus/CyberPulse/state/final_report.md
+[10/03/26 22:32:16] INFO     [PatchingAgent] State saved →                              base_agent.py:142
+                             /home/aarus/CyberPulse/state/patch_report.json                              
+                    INFO     [PatchingAgent] Completed in 0.55s                          base_agent.py:95
+───────────────────────────────────────── 📊 PIPELINE COMPLETE ──────────────────────────────────────────
+
+⏱  Total time: 0.8s
+💥 Confirmed vulnerabilities: 7
+🩹 Patches applied: 5
+
+📄 Final report: /home/aarus/CyberPulse/state/final_report.md

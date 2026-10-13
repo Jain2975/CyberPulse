@@ -1,0 +1,119 @@
+env:
+  contexts:
+  - excludePaths: []
+    name: baseline
+    urls:
+    - http://127.0.0.1:5000
+  parameters:
+    failOnError: true
+    progressToStdout: false
+jobs:
+- parameters:
+    enableTags: false
+    maxAlertsPerRule: 10
+  type: passiveScan-config
+- parameters:
+    maxDuration: 2
+    url: http://127.0.0.1:5000
+  type: spider
+- parameters:
+    maxDuration: 0
+  type: passiveScan-wait
+- parameters:
+    format: Short
+    summaryFile: /home/zap/zap_out.json
+  rules:
+  - action: IGNORE
+    customMessage: ''
+    id: 10011
+  - action: IGNORE
+    customMessage: ''
+    id: 10035
+  - action: IGNORE
+    customMessage: ''
+    id: 10015
+  - action: IGNORE
+    customMessage: ''
+    id: 10096
+  - action: IGNORE
+    customMessage: ''
+    id: 10109
+  - action: IGNORE
+    customMessage: ''
+    id: 10104
+  - action: IGNORE
+    customMessage: ''
+    id: 90022
+  - action: IGNORE
+    customMessage: ''
+    id: 10063
+  - action: WARN
+    customMessage: ''
+    id: 10020
+  - action: WARN
+    customMessage: ''
+    id: 10021
+  - action: WARN
+    customMessage: ''
+    id: 10038
+  - action: WARN
+    customMessage: ''
+    id: 10017
+  - action: WARN
+    customMessage: ''
+    id: 10098
+  - action: FAIL
+    customMessage: ''
+    id: 40018
+  - action: FAIL
+    customMessage: ''
+    id: 40019
+  - action: FAIL
+    customMessage: ''
+    id: 40020
+  - action: FAIL
+    customMessage: ''
+    id: 40021
+  - action: FAIL
+    customMessage: ''
+    id: 40012
+  - action: FAIL
+    customMessage: ''
+    id: 40014
+  - action: FAIL
+    customMessage: ''
+    id: 40016
+  - action: FAIL
+    customMessage: ''
+    id: 40017
+  - action: FAIL
+    customMessage: ''
+    id: 90019
+  - action: FAIL
+    customMessage: ''
+    id: 90020
+  - action: FAIL
+    customMessage: ''
+    id: 6
+  type: outputSummary
+- parameters:
+    reportDescription: ''
+    reportDir: /zap/wrk/
+    reportFile: zap_report_baseline.html
+    reportTitle: ZAP Scanning Report
+    template: traditional-html
+  type: report
+- parameters:
+    reportDescription: ''
+    reportDir: /zap/wrk/
+    reportFile: zap_report_baseline.md
+    reportTitle: ZAP Scanning Report
+    template: traditional-md
+  type: report
+- parameters:
+    reportDescription: ''
+    reportDir: /zap/wrk/
+    reportFile: zap_report_baseline.json
+    reportTitle: ZAP Scanning Report
+    template: traditional-json
+  type: report
