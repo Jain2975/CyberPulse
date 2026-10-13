@@ -1,6 +1,6 @@
 # CyberPulse
 
-> **⚠️ LEGAL NOTICE**: For isolated sandbox / educational use ONLY. Never run against systems you don't own.
+
 
 **Autonomous Penetration Testing & Vulnerability Exploitation Swarm**  
 A 4-agent AI security ecosystem that runs a full red-team → blue-team cycle autonomously. 3. Autonomous Penetration Testing & Vulnerability Exploitation Swarm
