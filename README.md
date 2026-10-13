@@ -150,6 +150,10 @@ CyberPulse/
 └── tests/                  ← Pytest test suite
 ```
 
+[![Architecture diagram](https://gitdiagram.com/diagram-badge.svg)](https://gitdiagram.com/jain2975/cyberpulse?utm_source=readme&utm_medium=badge)
+
+[![Architecture diagram of jain2975/cyberpulse](https://gitdiagram.com/jain2975/cyberpulse/diagram.png)](https://gitdiagram.com/jain2975/cyberpulse?utm_source=readme&utm_medium=picture)
+
 ## Run Modes
 
 ```bash
